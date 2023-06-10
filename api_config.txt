@@ -1,0 +1,6 @@
+API configuration:
+Security: Here I made one table wp_login , when admin login then one record inserted here as admin. When API calling then will check data in this table.
+               If a record is found then it will proceed for insertion through JASON as you provided.
+As per you given Schema I have made tables ( wp_categories, wp_products, wp_product_categories ).
+
+You need to make request  http://localhost/wordpress/api/api.php?rquest=getdata   (I put folder api in root where wordpress is there).
