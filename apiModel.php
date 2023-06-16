@@ -390,33 +390,65 @@ public static function insertCategoryWp($wpdb,$category_id,$categoryname,$catego
 	} 
 
 
-   // find categories
-    public static function findProducts($wpdb,$category_id,$filter){
+   // find Products
+    public static function findProducts($wpdb,$category_id,$filter,$search,$popularity){
 		if($filter<>""){
 			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'");
-		}else{
-			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id");	
+		}elseif($search<>""){
+			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and name like '%$search%'");
+        }elseif($popularity<>"" && $filter<>"" && $search==""){
+			if($popularity=="popularity"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'  order by popularity DESC");
+			}elseif($popularity=="A-Z"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'  order by name ASC");
+			}elseif($popularity=="Z-A"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'  order by name DESC");
+			}
+        }elseif($popularity<>"" && $filter==""  && $search==""){
+			if($popularity=="popularity"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id  order by popularity DESC");
+			}elseif($popularity=="A-Z"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id  order by name ASC");
+			}elseif($popularity=="Z-A"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id  order by name DESC");
+			}
+		}else{			
+			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id order by popularity DESC");	
 		}
 	}
-    public static function findProductsPagination($wpdb,$category_id,$page_first_result,$results_per_page,$filter){
+	   // find Products with pagination
+    public static function findProductsPagination($wpdb,$category_id,$page_first_result,$results_per_page,$filter,$search,$popularity){
 		if($filter<>""){
 			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter' LIMIT $page_first_result,$results_per_page");
-		}else{
-			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id LIMIT $page_first_result,$results_per_page");
+		}elseif($search<>""){
+			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and name like '%$search%'");
+        }elseif($popularity<>"" && $filter<>""  && $search==""){
+			if($popularity=="popularity"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'  order by popularity DESC LIMIT $page_first_result,$results_per_page");
+			}elseif($popularity=="A-Z"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'  order by name ASC LIMIT $page_first_result,$results_per_page");
+			}elseif($popularity=="Z-A"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id and industry= '$filter'  order by name DESC LIMIT $page_first_result,$results_per_page");
+			}
+        }elseif($popularity<>"" && $filter==""  && $search==""){
+			if($popularity=="popularity"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id  order by popularity DESC LIMIT $page_first_result,$results_per_page");
+			}elseif($popularity=="A-Z"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id  order by name ASC LIMIT $page_first_result,$results_per_page");
+			}elseif($popularity=="Z-A"){
+				return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id  order by name DESC LIMIT $page_first_result,$results_per_page");
+			}
+		}else{	
+			return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id order by popularity DESC LIMIT $page_first_result,$results_per_page");
 		}			
 	}	
 
-
-
-
-    public static function popularitysort($wpdb){
-		return $result = $wpdb->get_results ("SELECT * FROM  wp_products WHERE default_category_id =  $category_id LIMIT $page_first_result,$results_per_page");	
-	}
+// industry
     public static function industryFilter($wpdb,$category_id){
 		return $result = $wpdb->get_results ("SELECT industry FROM  wp_products WHERE default_category_id =  $category_id order by industry");	
 	}
 
-
+// entry review
     public static function insertReview($wpdb,$prod_id,$company,$review){
 		
 		try
